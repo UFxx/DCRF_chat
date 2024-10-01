@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
-
+from .juzmin import JAZZMIN_SETTINGS
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,13 +26,14 @@ SECRET_KEY = 'django-insecure-5m^_=+k-km)+-v35k$c1^*e2wo%g+7tuf4=v@0xc8j&!+o*z3!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-
+    'daphne',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,6 +79,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '/password/reset/confirm/{uid}/{token}',
@@ -186,13 +197,6 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 AUTH_USER_MODEL = 'chat.User'
 
 
-ASGI_APPLICATION = "backend.asgi.application"
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
+# расширение админки
+JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
+JAZZMIN_SETTINGS["show_ui_builder"] = True
