@@ -1,0 +1,23 @@
+.my-message {
+  @extend %message;
+  background-color: #4c566a;
+  position: relative;
+
+  .message-username {
+    @extend %message-username;
+    left: calc(100% - 30px);
+    top: -20px;
+  }
+}
+
+.message {
+  @extend %message;
+  border: 2px solid #444d60;
+  align-self: flex-start;
+  position: relative;
+
+  .message-username {
+    @extend %message-username;
+    top: -23px;
+  }
+}

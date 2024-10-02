@@ -1,0 +1,11 @@
+.container {
+  width: 100%;
+  height: 90svh;
+  background-color: #3b4252;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  @import './Companion';
+  @import './Messages';
+  @import './MessageInput';
+}

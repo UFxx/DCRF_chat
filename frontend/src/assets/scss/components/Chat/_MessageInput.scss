@@ -1,0 +1,41 @@
+.message-input {
+  height: 7%;
+  border-radius: 0 0 20px 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 0 25px 20px;
+
+  input {
+    border-radius: 20px;
+    font-size: 24px;
+    width: 90%;
+    height: 50px;
+    padding-left: 15px;
+    background: #aaaaaa20;
+    outline: none;
+    border: none;
+    transition: 0.3s ease background-color;
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+      transition: 0.3s ease padding-left, 0.3s ease opacity;
+    }
+    &:focus::placeholder {
+      padding-left: 15px;
+      opacity: 0;
+    }
+    &:focus {
+      background-color: #aaaaaa50;
+    }
+  }
+  img {
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    opacity: 50%;
+    cursor: pointer;
+    transition: 0.3s ease opacity;
+    &:hover {
+      opacity: 100%;
+    }
+  }
+}
