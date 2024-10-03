@@ -9,3 +9,38 @@
   font-size: 14px;
   white-space: nowrap;
 }
+
+%scrollable {
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #050c26;
+    border: 3px solid #4c566a;
+  }
+}
+
+%user-list {
+  position: absolute;
+  left: -100px;
+  padding: 10px 0;
+  transform: translateX(-50%);
+  width: 20%;
+  height: 100%;
+  border-radius: 20px 0 0 20px;
+  background-color: #2e3440;
+  border: 2px solid #3b4252;
+  z-index: 3;
+  transition: 0.3s ease opacity;
+  @extend %scrollable;
+  @import '../components/Chat/UserList/User';
+  &:first-child {
+    padding: 0;
+  }
+}
