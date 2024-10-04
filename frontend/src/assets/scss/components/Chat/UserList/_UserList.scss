@@ -1,0 +1,8 @@
+.user-list__opened {
+  @extend %user-list;
+}
+
+.user-list__closed {
+  @extend %user-list;
+  opacity: 0;
+}

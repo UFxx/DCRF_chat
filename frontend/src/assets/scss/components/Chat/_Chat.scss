@@ -1,0 +1,21 @@
+.container {
+  position: relative;
+  width: 100%;
+  height: 90svh;
+  background-color: #3b4252;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s ease border-radius;
+  @import './UserList/UserList';
+  @import './Companion';
+  @import './Messages';
+  @import './MessageInput';
+}
+
+.container__user-list__opened {
+  border-radius: 0 20px 20px 0;
+}
+
+.container__user-list__closed {
+  border-radius: 20px;
+}

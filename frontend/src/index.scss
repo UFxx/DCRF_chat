@@ -1,4 +1,6 @@
 // Common
-@import './scss/common/base';
+@import './assets/scss/common/base';
+@import './assets/scss/common/extends';
 
 // Components
+@import './assets/scss/components/Chat/Chat';

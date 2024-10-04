@@ -1,9 +1,11 @@
+import Chat from './components/Chat/Chat';
+
 function App() {
-    return (
+  return (
     <>
-    <p>aa</p>
-   </>
-  )
+      <Chat />
+    </>
+  );
 }
 
-export default App
+export default App;

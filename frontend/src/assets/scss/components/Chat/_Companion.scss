@@ -1,0 +1,17 @@
+.companion {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+  background-color: #3b4252;
+  z-index: 2;
+  border-bottom: 2px solid #aaaaaa20;
+  border-radius: 20px 20px 0 0;
+  p:last-child {
+    opacity: 30%;
+  }
+  @import './UserList/OpenUserList';
+}
