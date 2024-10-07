@@ -6,6 +6,10 @@
   cursor: pointer;
   user-select: none;
   transition: 0.3s ease background-color;
+  .user-list__item-username {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+  }
   &:hover {
     background-color: #3b4252;
   }

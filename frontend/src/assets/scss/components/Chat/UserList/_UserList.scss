@@ -1,5 +1,6 @@
 .user-list__opened {
   @extend %user-list;
+  left: -100px;
 }
 
 .user-list__closed {

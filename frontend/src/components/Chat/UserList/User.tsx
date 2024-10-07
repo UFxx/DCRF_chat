@@ -1,13 +1,15 @@
 import { FC } from 'react';
 
 interface Props {
+  username: string;
   name: string;
 }
 
-const User: FC<Props> = ({ name }) => {
+const User: FC<Props> = ({ username, name }) => {
   return (
     <div className="user-list__item">
-      <p>{name}</p>
+      <p className="user-list__item-name">{name}</p>
+      <p className="user-list__item-username">{username}</p>
     </div>
   );
 };

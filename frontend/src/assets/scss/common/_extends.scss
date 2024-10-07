@@ -28,7 +28,7 @@
 
 %user-list {
   position: absolute;
-  left: -100px;
+  left: -95px;
   padding: 10px 0;
   transform: translateX(-50%);
   width: 20%;
@@ -37,7 +37,7 @@
   background-color: #2e3440;
   border: 2px solid #3b4252;
   z-index: 3;
-  transition: 0.3s ease opacity;
+  transition: 0.3s ease opacity, 0.3s ease left;
   @extend %scrollable;
   @import '../components/Chat/UserList/User';
   &:first-child {

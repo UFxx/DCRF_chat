@@ -50,7 +50,13 @@ const UserList: FC<Props> = ({ userListOpened }) => {
   return (
     <div className={`user-list__${userListOpened ? 'opened' : 'closed'}`}>
       {users?.data.map((user) => {
-        return <User key={user.id} name={user.username} />;
+        return (
+          <User
+            key={user.id}
+            username={user.username}
+            name={`${user.first_name} ${user.last_name}`}
+          />
+        );
       })}
     </div>
   );
