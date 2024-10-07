@@ -13,3 +13,9 @@ class UserCreateConsumer(mixins.ListModelMixin, mixins.CreateModelMixin, Generic
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+class RoomConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+    lookup_field = 'id'
+
+    
