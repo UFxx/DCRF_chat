@@ -11,7 +11,7 @@ venv\Scripts\activate
 
 pip install -r requirements.txt
 ```
-### После перейди в директория backend
+### После перейди в директорию backend
 
 ## Запуск сервера 
 

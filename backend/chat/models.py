@@ -32,15 +32,15 @@ class Room(models.Model):
 
     type = models.CharField(max_length=30, choices=ROOM_TYPE, default='user_chat')
     name = models.CharField(max_length=255, null=False, blank=False, unique=True)
-    users = SortedManyToManyField(User, verbose_name='Пользователи')
-    messages = SortedManyToManyField('Message', verbose_name='Сообщения')
+    users = SortedManyToManyField(User, verbose_name='Пользователи', blank=True)
+    messages = SortedManyToManyField('Message', verbose_name='Сообщения', blank=True)
     slug = AutoSlugField(populate_from='create_url', unique=True, verbose_name='URL')
 
     def __str__(self):
         return f"Room-{self.name}#{self.pk}"
 
     def create_url(self):
-        return f"{self.name}#{self.pk}"
+        return f"{self.name}"
 
 
 class Message(models.Model):

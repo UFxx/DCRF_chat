@@ -66,7 +66,7 @@ class RoomConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
     def add_user_to_room(self, room_id):
         user: User = self.scope['user']
         room: Room = Room.objects.filter(pk=self.room_subscribe).first()
-        if user not in room.users:
+        if user not in room.users.all():
             room.users.add(user)
 
     @database_sync_to_async
@@ -92,3 +92,5 @@ class RoomConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
         )
         room: Room = Room.objects.filter(pk=self.room_subscribe).first()
         room.messages.add(new_message)
+
+
