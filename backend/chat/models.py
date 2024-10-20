@@ -8,14 +8,14 @@ from sortedm2m.fields import SortedManyToManyField
 # Create your models here.
 
 class User(AbstractUser):
-    phone = models.CharField(max_length=15, verbose_name='Номер телефона', unique=True)
+    phone = models.CharField(max_length=15, verbose_name='Номер телефона', )
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return f"{self.phone}"
+        return f"{self.username}"
 
     def save(self, *args, **kwargs):
         if self.password and not self.password.startswith(('pbkdf2_sha256$', 'bcrypt$', 'argon2')):
@@ -30,23 +30,22 @@ class Room(models.Model):
         ('group_chat', 'group_chat')
     )
 
+    name = models.CharField(max_length=255, )
     type = models.CharField(max_length=30, choices=ROOM_TYPE, default='user_chat')
-    name = models.CharField(max_length=255, null=False, blank=False, unique=True)
-    users = SortedManyToManyField(User, verbose_name='Пользователи', blank=True)
-    messages = SortedManyToManyField('Message', verbose_name='Сообщения', blank=True)
-    slug = AutoSlugField(populate_from='create_url', unique=True, verbose_name='URL')
+    host = models.ForeignKey(User, on_delete=models.CASCADE, related_name="rooms", blank=True, null=True)
+    current_users = models.ManyToManyField(User, related_name="current_rooms", blank=True)
 
     def __str__(self):
-        return f"Room-{self.name}#{self.pk}"
-
-    def create_url(self):
-        return f"{self.name}"
+        return f"Room({self.name} {self.host})"
 
 
 class Message(models.Model):
-    text = models.TextField(verbose_name='Сообщение')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата и время')
+    room = models.ForeignKey("chat.Room", on_delete=models.CASCADE, related_name="messages", null=True, blank=True)
+    text = models.TextField(max_length=500)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="messages")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Message {self.pk}"
+        return f"Message({self.user} {self.room})"
+
+
