@@ -1,12 +1,15 @@
 import json
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
+from typing import Any, Tuple, Dict, Optional, OrderedDict, Union
+
+from django.db.models import Q
 from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
 from djangochannelsrestframework import mixins
-from djangochannelsrestframework.observer.generics import (ObserverModelInstanceMixin, action)
+from djangochannelsrestframework.observer.generics import ObserverModelInstanceMixin, action
 from djangochannelsrestframework.observer import model_observer
 from djangochannelsrestframework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import status
 
 from .models import *
 from .serializers import *
@@ -46,6 +49,14 @@ class RoomConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
             user=self.scope["user"],
             text=message
         )
+
+    @action()
+    async def update_message(self, message, message_id, **kwargs):
+        await self.update_message(pk=message_id, text=message, user=self.scope['user'].id)
+
+    @action()
+    async def delete_message(self, message_id, **kwargs):
+        await self.delete_message(pk=message_id, user=self.scope['user'].id)
 
     @action()
     async def subscribe_to_messages_in_room(self, pk, **kwargs):
@@ -88,6 +99,19 @@ class RoomConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
         return Room.objects.get(pk=pk)
 
     @database_sync_to_async
+    def update_message(self, pk: int, text: str, user: int) -> None:
+        message: Message = Message.objects.get(Q(pk=pk) & Q(user=user))
+        if message:
+            message.text = text
+            message.save()
+
+    @database_sync_to_async
+    def delete_message(self, pk: int, user: int) -> None:
+        message: Message = Message.objects.get(Q(pk=pk) & Q(user=user))
+        if message:
+            message.delete()
+
+    @database_sync_to_async
     def current_users(self, room: Room):
         return [UserSerializer(user).data for user in room.current_users.all()]
 
@@ -101,3 +125,48 @@ class RoomConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
         user: User = self.scope["user"]
         if not user.current_rooms.filter(pk=self.room_subscribe).exists():
             user.current_rooms.add(Room.objects.get(pk=pk))
+
+
+class CreateRoomConsumer(mixins.CreateModelMixin, GenericAsyncAPIConsumer):
+    queryset = Room.objects.all()
+    serializer_class = CreateUpdateRoomSerializer
+    permission_classes = (IsAuthenticated,)
+
+    @action()
+    def create(self, data: dict, **kwargs):
+        data['host'] = self.scope['user'].id
+        serializer = self.get_serializer(data=data, action_kwargs=kwargs)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer, **kwargs)
+
+        return serializer.data, status.HTTP_201_CREATED
+
+
+class RetrieveUpdateDeleteRoomConsumer(mixins.RetrieveModelMixin, mixins.PatchModelMixin, mixins.DeleteModelMixin,
+                                       GenericAsyncAPIConsumer):
+    queryset = Room.objects.all()
+    lookup_field = 'id'
+    serializer_class = CreateUpdateRoomSerializer
+    permission_classes = (IsAuthenticated,)
+
+    @action()
+    def patch(self, data: dict, **kwargs):
+        instance = self.get_object(data=data, **kwargs)
+        room = Room.objects.get(pk=instance.pk)
+        if room.host != self.scope['user']:
+            return None, status.HTTP_403_FORBIDDEN
+        serializer = self.get_serializer(instance=instance, data=data, action_kwargs=kwargs, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_patch(serializer, **kwargs)
+        if getattr(instance, "_prefetched_objects_cache", None):
+            instance._prefetched_objects_cache = {}
+        return serializer.data, status.HTTP_200_OK
+
+    @action()
+    def delete(self, **kwargs) -> Tuple[None, int]:
+        instance = self.get_object(**kwargs)
+        room = Room.objects.get(pk=instance.pk)
+        if room.host != self.scope['user']:
+            return None, status.HTTP_403_FORBIDDEN
+        self.perform_delete(instance, **kwargs)
+        return None, status.HTTP_204_NO_CONTENT

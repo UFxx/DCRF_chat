@@ -41,3 +41,19 @@ class RoomSerializer(serializers.ModelSerializer):
     def get_last_message(self, obj: Room):
         return MessageSerializer(obj.messages.order_by('created_at').last()).data
 
+
+class CreateUpdateRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ('id', 'name', 'type', 'host')
+
+    def create(self, validated_data):
+        return Room.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+
+        instance.name = validated_data.get('name', instance.name)
+        instance.save()
+        return instance
+
+
