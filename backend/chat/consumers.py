@@ -52,11 +52,11 @@ class RoomConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
 
     @action()
     async def update_message(self, message, message_id, **kwargs):
-        await self.update_message(pk=message_id, text=message, user=self.scope['user'].id)
+        await self.db_update_message(pk=message_id, text=message, user=self.scope['user'].id)
 
     @action()
     async def delete_message(self, message_id, **kwargs):
-        await self.delete_message(pk=message_id, user=self.scope['user'].id)
+        await self.db_delete_message(pk=message_id, user=self.scope['user'].id)
 
     @action()
     async def subscribe_to_messages_in_room(self, pk, **kwargs):
@@ -99,14 +99,14 @@ class RoomConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
         return Room.objects.get(pk=pk)
 
     @database_sync_to_async
-    def update_message(self, pk: int, text: str, user: int) -> None:
+    def db_update_message(self, pk: int, text: str, user: int) -> None:
         message: Message = Message.objects.get(Q(pk=pk) & Q(user=user))
         if message:
             message.text = text
             message.save()
 
     @database_sync_to_async
-    def delete_message(self, pk: int, user: int) -> None:
+    def db_delete_message(self, pk: int, user: int) -> None:
         message: Message = Message.objects.get(Q(pk=pk) & Q(user=user))
         if message:
             message.delete()
